@@ -1,0 +1,4 @@
+add:
+	-Team select for task creation					done
+	-Team update for task element					done
+	-"See Tasks" button with teamTasks endpoint		done

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block styles %}
+    <style>
+        a{
+            text-decoration: none;
+        }
+        .login{
+            margin: 0 auto;
+            width: 425px;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: center;justify-content: center;
+            gap: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px #ccc;
+            padding: 1rem;
+        }
+        form input, form button, form a{
+            width: 100%;
+        }
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="login">
+    	<form id="myform">
+    		<input type="text" name="username" placeholder="Username">
+            <input type="email" name="email" placeholder="Email">
+    		<input type="password" name="password1" placeholder="******">
+            <input type="password" name="password2" placeholder="******">
+    		<button class="btn1">Register</button>
+            <p id="servermsg">Server Message: </p>
+    		<a class="btn1" href="{% url 'loginpage' %}">Log In to your account</a>
+    	</form>
+    </section>
+{% endblock main %}
+
+{% block scripts %}
+    <script>
+        const form = document.querySelector('#myform')
+        const csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value
+
+        const sendForm = async () => {
+            const password1 = form.querySelector('input[name="password1"]').value
+            const password2 = form.querySelector('input[name="password2"]').value
+            if (password1 !== password2){
+                console.error('Passwords do not match')
+                return
+            }
+            const formData = new FormData()
+            formData.append('username', form.querySelector('input[name="username"]').value)
+            formData.append('email', form.querySelector('input[name="email"]').value)
+            formData.append('password', password1)
+            try{
+                const response = await fetch('http://localhost:8000/auth/signup/', {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    body: formData,
+                })
+                data = await response.json()
+                console.log(data.success)
+                const msg = document.querySelector('#servermsg')
+                msg.innerHTML = `${data.success}`
+
+                setTimeout(() => {window.location.href = '{% url "loginpage" %}'}, 2000);
+            }catch(e){
+                console.error(e.message)
+            }
+        }
+        form.addEventListener('submit', (event) => {
+            event.preventDefault()
+            sendForm()
+        })
+    </script>
+{% endblock scripts %}

@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+{% block styles %}
+	<style>
+		.alltasksbtn{
+			width: 50%;
+			margin: 5px auto;
+			display: flex;align-items: center;justify-content: center;
+		}
+		form{
+			width: 100%;
+			height: initial;
+
+			padding: 1rem 0;
+			border-radius: 5px 5px 0 0;
+			display: flex;flex-direction: column;
+			gap: .5rem;
+			border-bottom: 1px solid #333;
+		}
+		.task-container{
+			display: flex;flex-direction: row;flex-wrap: wrap;
+			gap: 5px;
+			justify-content: center;
+			/* align-items: center; */
+			padding: 0 1rem;
+			width: 65%;
+			height: calc(100vh - 90px);
+			overflow-y: scroll;
+			overflow-x: hidden;
+		}
+		.task{
+			min-width: 325px;
+			max-width: 400px;
+			/* min-height:325px; */
+			height: fit-content;
+			/* height: 420px; */
+			overflow: hidden;
+			padding: 1rem;
+			border-radius: 5px;
+			box-shadow: 0 5px 20px #ccc;
+			display: flex;flex-direction: column;
+			gap: .5rem;
+		}
+		.task img{
+			object-fit:cover;
+			width: 100%;
+			/* max-height: 400px; */
+			max-height: 350px;
+			height: 100%;
+			border-radius: 5px;
+			cursor: zoom-in;
+		}
+		.task img:active{
+			transform: scale(2.5);
+		}
+		.message-container{
+			padding: 1rem;
+			border-radius: 50px;
+			box-shadow: 0 5px 15px #ccc;
+			background: #fff;
+			/* width: fit-content;height: fit-content; */
+			width: initial;height: initial;
+			position: fixed;
+			bottom: 10px;right: 10px;
+			z-index: 99;
+		}
+		.message-container i{
+			color: #000;
+			font-size: 1rem;
+			color: #082;
+		}
+
+		.home{
+			display: flex;flex-direction: row;
+			flex-wrap:wrap;
+			width: 100%;
+			/* min-heigh: calc(100vh - 90px); */
+			overflow: hidden;
+			/* height: 100vh; */
+			/* align-items: start;justify-content: start; */
+		}
+		.forms{
+			width: 35%;
+			padding: 0 1rem;
+			border-right:1px solid #333;
+			overflow-x: hidden;
+			overflow-y: scroll;
+			max-height: calc(100vh - 90px);
+			height: 100%;
+		}
+		#teams{
+			display: flex;flex-direction: column;
+			width: 100%;
+		}
+		.teamsh2{
+			width: 50%;text-align: center;padding: 10px 0;
+			border-bottom:1px solid #ccc;margin: 0 auto;
+		}
+		.team{
+			display: flex;flex-direction: row;
+			justify-content: space-between;align-items: center;
+			padding: 10px 0;border-bottom:1px solid #ccc;
+		}
+		.team div{
+			display: flex;align-items: center;justify-content: center;gap: 5px;
+		}
+
+		#members-container{
+			max-width: calc(35% - 2rem);
+			min-width: 325px;
+			width: 100%;
+			height: 500px;
+			overflow-y: scroll;
+			overflow-x: hidden;
+			padding: 10px;
+			display: none;
+			flex-direction: row;
+			flex-wrap:wrap;
+			gap: 5px;
+			align-items: start;justify-content: start;
+			border-radius: 5px;
+			background: #fff;border:1px solid #888;
+			position: absolute;
+			left: 1rem;
+			z-index: 4;
+		}
+		.member-item{
+			padding: 5px;
+			background: #ccc;
+			border-radius: 5px;
+			width: initial;
+			height: fit-content;
+			font-size: 1rem;
+		}
+		#close-members{
+			position: absolute;
+			top: 10px;right: 10px;
+			z-index: 5;
+			padding: 5px 10px;border-radius: 5px;
+			border:none;outline:none;cursor: pointer;
+			font-size: 1.3rem;
+		}
+		#close-members:hover{
+			background: #000;color: #fff;
+		}
+		#members-container.show{
+			display: flex;
+		}
+	</style>
+{% endblock styles %}
+
+{% block main %}
+	<section class="home">
+
+		<section id="members-container">
+		</section>
+		
+		<section class="forms">
+	    
+			<form id="create-task-form">
+				<p>Create task</p>
+				<input type="file" name="thumbnail">
+				<textarea name="content" cols="30"></textarea>
+				<div>
+					<select name="team" id="teamselect-createform">
+						<option value="">Teams</option>
+					</select>
+					<label for="teamselect-createform">Choose a team or leave blank</label>
+				</div>
+				<button class="btn1">Create</button>
+			</form>
+
+			<form id="teamForm">
+				<p>Create team</p>
+				<input type="text" name="teamname" placeholder="Name">
+				<button class="btn1">Create</button>
+			</form>
+			
+			<h2 class="teamsh2">TEAMS</h2>
+			<button class="btn1 alltasksbtn">See your Tasks</button>
+			<section id="teams">
+			</section>
+		</section>
+
+		<section class="task-container"></section>
+	
+	</section>
+{% endblock main %}
+
+{% block scripts %}
+<script>
+	const taskContainer = document.querySelector('.task-container');
+	const csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value
+
+	// if (taskContainer.innerHTML === ''){
+	// 	taskContainer.innerHTML = `
+	// 		<p>
+	// 			Here you will see your tasks.
+	// 			<br>
+	// 			If you form part of a team, hit <i>See tasks</i>
+	// 			<br>
+	// 			to see your tasks.
+	// 		</p>
+	// 	`
+	// }
+
+	const showMessage = () => {
+		const messageContainer = document.createElement('div');
+		messageContainer.className = 'message-container';
+		messageContainer.innerHTML = '<i class="fa-solid fa-check"></i>';
+		document.body.appendChild(messageContainer);
+
+		setTimeout(() => {
+			messageContainer.remove();
+		}, 5000);
+	}
+
+	const deleteTask = async (id) => {
+		try{
+			const response = await fetch(`http://localhost:8000/api/delete-task/${id}/`, {
+				method: 'DELETE',
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			console.log('deleted')
+			// window.location.reload()
+			showMessage()
+		}catch(e){
+			console.error(e.message)
+		}
+	}
+
+	const updateTask = async (id, content, team, completed) => {
+		try{
+			const response = await fetch(`http://localhost:8000/api/update-task/${id}/`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					content: content,
+					completed: completed,
+					team: team
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken
+				}
+			})
+			// window.location.reload()
+			showMessage()
+		}catch(e){
+			console.log(e.message)
+		}
+	}
+
+	const getTasks = async () => {
+		try{
+			const tasksResponse = await fetch('http://localhost:8000/api/get-tasks', {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const teamsResponse = await fetch('/api/get-teams/', {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const tasksData = await tasksResponse.json()
+			const teamsData = await teamsResponse.json()
+
+			console.log(teamsData, tasksData)
+			taskContainer.innerHTML = '';
+			for (const item of tasksData){
+				const task = document.createElement('div');
+				task.className = 'task';
+				const id = item.id
+				const completed = item.completed
+				const createdDate = item.created_at.slice(0, 10)
+
+				task.innerHTML = `
+					<img src="http://localhost:8000${item.thumbnail}" alt="${item.username}">
+    				<textarea name="content" cols="30">${item.content}</textarea>
+    				<div style="display:flex;align-items:center;">
+    					Done [ <input type="checkbox" name="completed" ${item.completed ? 'checked' : ''}> ]
+    				</div>
+				    <p>By ${item.username} at ${createdDate}</p>
+				    <p>
+				    	Team: <select name="teamselect">
+				    		<option value="${item.team}">${item.teamname}</option>
+				    	</select>
+				    </p>
+
+				    <button class="btn1 edit-task" data-task-id="${id}">Save Changes</button>
+				    <button class="btn1 delete-task" data-task-id="${id}">Delete</button>
+				`
+				taskContainer.appendChild(task);
+				
+				// const taskSelectTeam = task.querySelector('select[name="teamselect"]')
+				for(const team of teamsData){
+					const option = document.createElement('option')
+					option.innerHTML = team.teamname
+					option.value = team.id
+					task.querySelector('select[name="teamselect"]').appendChild(option)
+				}
+			}
+			const delete_btn = document.querySelectorAll('.delete-task')
+			delete_btn.forEach((btn)=>{
+				btn.addEventListener('click',()=>{
+					const taskId = btn.dataset.taskId
+					deleteTask(taskId).then(()=>{
+						getTasks()
+					})
+				})
+			})
+			const edit_btn = document.querySelectorAll('.edit-task')
+			edit_btn.forEach((btn)=>{
+				btn.addEventListener('click', ()=>{
+					const taskId = btn.dataset.taskId
+					const taskContainer = btn.parentNode
+					const contentInput = taskContainer.querySelector('textarea[name="content"]')
+					const completedInput = taskContainer.querySelector('input[name="completed"]')
+					const teamSelect = taskContainer.querySelector('select[name="teamselect"]')
+
+					const content = contentInput.value
+					const completed = completedInput.checked
+					const team = teamSelect.value
+
+					updateTask(taskId, content, team, completed).then(()=>{
+						getTasks()
+					})
+				})
+			})
+		}catch(e){
+			console.error(e.message)
+		}
+	}
+
+	const createTaskForm = document.querySelector('#create-task-form')
+	const createTaskTeams = async () => {
+		const createFormSelectTeam = createTaskForm.querySelector('select[name="team"]')
+		try{
+			const response = await fetch('/api/get-teams/', {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+
+			const data = await response.json()
+			console.log(data)
+			for(const team of data){
+				const option = document.createElement('option')
+				option.innerHTML = team.teamname
+				option.value = team.id
+				createFormSelectTeam.appendChild(option)
+			}
+		}catch(e){
+			console.log(e.message);
+		}
+	}
+	createTaskTeams()
+	const createTask = async () => {
+		const contentValue = createTaskForm.querySelector('textarea[name="content"]').value // textarea
+		const thumbnailValue = createTaskForm.querySelector('input[name="thumbnail"]').files[0] // input file image
+		const teamSelectValue = createTaskForm.querySelector('select[name="team"]').value // select
+		const createTaskFormData = new FormData()
+		createTaskFormData.append('content', contentValue)
+		createTaskFormData.append('team', teamSelectValue)
+		if (thumbnailValue){createTaskFormData.append('thumbnail', thumbnailValue)}
+		try{
+			const createResponse = await fetch('/api/create-task/', {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrftoken,
+				},
+				body: createTaskFormData,
+			})
+			const createTaskResponseData = await createResponse.json()
+			console.log(createTaskResponseData);
+			// console.log(teamSelectValue)
+		}catch(e){console.log(e.message)}
+	}
+
+	createTaskForm.addEventListener('submit', (e)=>{
+		e.preventDefault()
+		createTask()
+		taskContainer.innerHTML = ''
+		getTasks()
+	})
+
+	document.addEventListener('DOMContentLoaded', getTasks)
+</script>
+
+<script>
+	const teamForm = document.querySelector('#teamForm')
+
+	const newTeam = async () => {
+		const teamname = document.querySelector('input[name="teamname"]').value
+		const teamFormData = new FormData(teamForm)
+		try{
+			const response = await fetch('{% url "new_team" %}', {
+				method: 'POST',
+				body: teamFormData,
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+
+			window.location.href='/'
+		}catch(e){
+			console.error(e.message)
+		}
+	}
+
+	teamForm.addEventListener('submit', (e)=>{
+		e.preventDefault()
+		newTeam()
+	})
+</script>
+
+<script>
+	const teamsContainer = document.querySelector('#teams')
+	const allTasksBtn = document.querySelector('.alltasksbtn')
+
+	allTasksBtn.addEventListener('click', async () => {
+		await getTasks()
+		console.log('Tasks button pressed.')
+	})
+
+	const getTeamTasks = async (teamId) => {
+		try{
+			const tasksResponse = await fetch('/api/get-team-tasks/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken,
+				},
+				body: JSON.stringify({
+					teamId: teamId
+				})
+			})
+			const tasksResponseData = await tasksResponse.json()
+			const teamsResponse = await fetch('/api/get-teams/', {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const teamsData = await teamsResponse.json()
+			console.log(tasksResponseData)
+			// display tasks below
+
+			taskContainer.innerHTML = ''
+			for (const item of tasksResponseData){
+				const task = document.createElement('div');
+				task.className = 'task';
+				const id = item.id
+				const completed = item.completed
+				const createdDate = item.created_at.slice(0, 10)
+
+				task.innerHTML = `
+					<img src="http://localhost:8000${item.thumbnail}" alt="${item.username}">
+    				<textarea name="content" cols="30">${item.content}</textarea>
+    				<div style="display:flex;align-items:center;">
+    					Done [ <input type="checkbox" name="completed" ${item.completed ? 'checked' : ''}> ]
+    				</div>
+				    <p>By ${item.username} at ${createdDate}</p>
+				    <p>
+				    	Team: <select name="teamselect">
+				    		<option value="${item.team}">${item.teamname}</option>
+				    	</select>
+				    </p>
+
+				    <button class="btn1 edit-task" data-task-id="${id}">Save Changes</button>
+				    <button class="btn1 delete-task" data-task-id="${id}">Delete</button>
+				`
+				taskContainer.appendChild(task);
+				
+				// const taskSelectTeam = task.querySelector('select[name="teamselect"]')
+				for(const team of teamsData){
+					const option = document.createElement('option')
+					option.innerHTML = team.teamname
+					option.value = team.id
+					task.querySelector('select[name="teamselect"]').appendChild(option)
+				}
+			};
+
+			const delete_btn = document.querySelectorAll('.delete-task')
+			delete_btn.forEach((btn)=>{
+				btn.addEventListener('click',()=>{
+					const taskId = btn.dataset.taskId
+					deleteTask(taskId).then(()=>{
+						getTeamTasks(teamId)
+					})
+				})
+			})
+			const edit_btn = document.querySelectorAll('.edit-task')
+			edit_btn.forEach((btn)=>{
+				btn.addEventListener('click', ()=>{
+					const taskId = btn.dataset.taskId
+					const taskContainer = btn.parentNode
+					const contentInput = taskContainer.querySelector('textarea[name="content"]')
+					const completedInput = taskContainer.querySelector('input[name="completed"]')
+					const teamSelect = taskContainer.querySelector('select[name="teamselect"]')
+
+					const content = contentInput.value
+					const completed = completedInput.checked
+					const team = teamSelect.value
+
+					updateTask(taskId, content, team, completed).then(()=>{
+						getTeamTasks(teamId)
+					})
+				})
+			});
+		}catch(e){console.log(e.message)}
+	}
+
+	const getMembers = async (id) => {
+		const membersContainer = document.querySelector('#members-container')
+		const closeButton = document.createElement('button')
+		closeButton.id = 'close-members'
+		closeButton.innerHTML = 'Close'
+
+		try{
+			const response = await fetch(`/api/get-team-members/${id}/`, {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const data = await response.json()
+
+			membersContainer.innerHTML = ''
+			membersContainer.appendChild(closeButton)
+			membersContainer.classList.add('show')
+
+			for(const member of data){
+				const membersP = document.createElement('p')
+				membersP.className = 'member-item'
+				membersP.innerHTML=`
+					<i class="fa-solid fa-user"></i>
+					· ${member}
+
+				`
+				membersContainer.appendChild(membersP)
+			}
+
+			closeButton.addEventListener('click', () => {
+				membersContainer.classList.remove('show')
+			})
+		}catch(e){
+			console.log(e.message)
+		}
+	}
+
+	const getMyTeams = async () => {
+		try{
+			const response = await fetch('/api/get-teams/', {
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const teamdata = await response.json()
+
+			teamsContainer.innerHTML = ''
+			for (const x of teamdata){
+				const team = document.createElement('div');
+				team.className = 'team';
+				team.innerHTML = `
+					<p class="team-name">${x.teamname}</p>
+					<div>
+						<button class="btn1 seemembersbtn" data-teamid=${x.id}>See Members</button>
+						<button class="btn1 seetasksbtn" data-teamid="${x.id}">See tasks</button>
+					</div>
+				`
+				teamsContainer.appendChild(team)
+			}
+
+			// click on x team tasks button, render tasks
+			const seeTasksBtn = document.querySelectorAll('.seetasksbtn')
+			seeTasksBtn.forEach(button=>{
+				button.addEventListener('click', async ()=>{
+					const teamId = button.getAttribute('data-teamid')
+
+					getTeamTasks(teamId)
+				})
+			})
+
+			const seeMembersBtn = document.querySelectorAll('.seemembersbtn')
+			seeMembersBtn.forEach(button=>{
+				button.addEventListener('click', async()=>{
+					const teamId = button.getAttribute('data-teamid')
+
+					getMembers(teamId)
+				})
+			})
+		}catch(e){
+			console.error(e.message)
+		}
+	}
+	getMyTeams()
+</script>
+{% endblock scripts %}

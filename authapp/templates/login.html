@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block styles %}
+    <style>
+    	a{
+    		text-decoration: none;
+    	}
+    	.login{
+    		margin: 0 auto;
+    		width: 425px;
+    	}
+    	form{
+    		display: flex;
+    		flex-direction: column;
+    		width: 100%;
+    		align-items: center;justify-content: center;
+    		gap: 1rem;
+    		border-radius: 5px;
+    		box-shadow: 0 5px 20px #ccc;
+    		padding: 1rem;
+    	}
+    	form input, form button, form a{
+    		width: 100%;
+    	}
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="login">
+    	<form id="myform">
+    		<input type="text" name="username" placeholder="Username">
+    		<input type="password" name="password" placeholder="******">
+    		<button class="btn1">Log In</button>
+    		<a class="btn1" href="{% url 'signuppage' %}">Create an Account</a>
+    	</form>
+    </section>
+{% endblock main %}
+
+{% block scripts %}
+    <script>
+    	const form = document.querySelector('#myform')
+        const csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value
+
+    	const login = async () => {
+    		const formData = new FormData(form)
+    		try{
+    			const response = await fetch('{% url "login" %}', {
+    				method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+    				body: formData
+    			})
+
+                const data = await response.json()
+
+                localStorage.setItem('username', data.user_data.username)
+                localStorage.setItem('email', data.user_data.email)
+                localStorage.setItem('id', data.user_data.id)
+    			window.location.href='{% url "frontpage" %}'
+    		}catch(e){
+    			console.error(e.message)
+    		}
+    	}
+    	form.addEventListener('submit', (event) => {
+            event.preventDefault()
+            login()
+        })
+    </script>
+{% endblock scripts %}

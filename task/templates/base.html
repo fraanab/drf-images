@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{% csrf_token %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	{% load static %}
+	<title>{% block title %}{% endblock title %} testing drf</title>
+	<link rel="stylesheet" href="{% static 'styles.css' %}">
+	{% block styles %}
+	{% endblock styles %}
+	<style>
+		nav{
+			width: 100%;padding: 1rem;
+			display: flex;flex-direction: row;flex-wrap:wrap;gap: 10px;
+			align-items: center;
+			box-shadow: 0 10px 30px #ccc;
+		}
+		a{text-decoration: none;color: #222;}
+		#users-box{
+			padding: 1rem;
+			display: flex;flex-direction: column;
+			gap: 5px;
+		}
+		.user{
+			display: flex;align-items: center;gap: 1rem;
+			width: 100%;
+			border-bottom:1px solid #ccc;
+			justify-content: space-between;
+			padding-bottom: 5px;
+		}
+	</style>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+	<nav>
+		{% if request.user.is_authenticated %}
+		<a href="/">Home</a>
+		{{request.user}}
+		<button id="logout-btn" class="btn1">Log Out</button>
+
+		<p style="margin-left: 2rem;">User Search</p>
+		<input type="text" name="username" placeholder="Username" id="username-search-input">
+		<button id="username-search-btn" class="btn1"><i class="fa-solid fa-magnifying-glass"></i></button>
+
+
+		{% else %}
+		<a href="{% url 'loginpage' %}">Log In</a>
+		{% endif %}
+	</nav>
+
+	<section id="users-box">
+	</section>
+
+	<main>
+	{% block main %}
+	{% endblock %}
+	</main>
+	
+	<script src="https://unpkg.com/htmx.org@1.9.2"></script>
+	{% block scripts %}
+	{% endblock scripts %}
+
+	{% if request.user.is_authenticated %}
+	<script>
+		const logoutBtn = document.querySelector('#logout-btn')
+
+		const logout = async () => {
+			try{
+				const response = await fetch('{% url "logout" %}', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': csrftoken
+					},
+				})
+			}catch(e){
+				console.error(e.message)
+			}
+		}
+
+		logoutBtn.addEventListener('click', async()=>{
+			await logout()
+			localStorage.removeItem('username')
+            localStorage.removeItem('email')
+            localStorage.removeItem('id')
+			console.log('Session ended.')
+			window.location.href = '{% url "loginpage" %}'
+		})
+	</script>
+	
+	<script>
+		const usernameInput = document.getElementById('username-search-input');
+		const searchBtn = document.getElementById('username-search-btn');
+		const usersBox = document.getElementById('users-box')
+
+		const addToTeam = async (userId, teamId) => {
+			try{
+				console.log(userId, teamId)
+				const response = await fetch('/api/add-user-to-team/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken
+					},
+					body: JSON.stringify({
+						userId: userId,
+						teamId: teamId,
+					})
+				})
+				const data = await response.json()
+
+			}catch(e){
+				console.error(e.message)
+			}
+		}
+
+		searchBtn.addEventListener('click', async () => {
+		  const username = usernameInput.value.trim();
+		  if (username !== '') {
+		    const url = '/auth/get-user/';
+		    const response = await fetch(url, {
+		      method: 'POST',
+		      headers: {
+		        'Content-Type': 'application/json',
+		        'X-CSRFToken': csrftoken,
+		      },
+		      body: JSON.stringify({
+		        username: username,
+		      }),
+		    });
+		    const data = await response.json();
+		    
+		    usersBox.innerHTML = ''
+		    for (a of data.users) {
+		    	const userElement = document.createElement('div')
+				const dataTeams = data.memberships
+
+		    	userElement.className = 'user'
+		    	userElement.innerHTML = `
+					<p>${a.username}</p>
+					<div class="teamSelection">
+						<select class="teamSelect">
+							<option>Your Teams</option>
+						</select>
+						<button class="btn1 addToTeamBtn">Add to Team</button>
+					</div>
+		    	`
+		    	usersBox.appendChild(userElement)
+				const teamSelect = userElement.querySelector('.teamSelect')
+
+				for(const t of dataTeams){
+					const option = document.createElement('option');
+					option.value = t.team;
+					option.textContent = t.teamname;
+					teamSelect.appendChild(option);
+				};
+
+		    };
+			const addToTeamBtn = usersBox.querySelectorAll('.addToTeamBtn')
+				addToTeamBtn.forEach((addToTeamBtn, index)=> {
+					addToTeamBtn.addEventListener('click', ()=> {
+						const selectedUser = data.users[index]
+						const selectedUserId = selectedUser.id;
+						const selectedTeamId = usersBox.querySelectorAll('.teamSelect')[index].value;
+						console.log(selectedTeamId, selectedUserId)
+
+						addToTeam(selectedUserId, selectedTeamId)
+				});
+			})
+		  } else {
+		    const url = '/auth/users/';
+		    const response = await fetch(url, {
+		      headers: {
+		        'X-CSRFToken': csrftoken,
+		      },
+		    });
+		    const data = await response.json();
+		    console.log(data);
+		  }
+		});
+	</script>
+	{% endif %}
+</body>
+</html>
