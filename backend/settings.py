@@ -1,4 +1,5 @@
 import os
+# import cloudinary
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -9,24 +10,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wa3zhg)8wy1t(c!uld7ua%uwox+9bg7gms15^ll0a!8$y#f@)8'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    # 'drf-images.fraanab.repl.co',
+    'drf-images.fraanab.repl.co',
 ]
 
 
 # Application definition
 CSRF_TRUSTED_ORIGINS = [
-  'http://127.0.0.1', 'http://localhost'
+  'http://127.0.0.1', 'http://localhost', 'https://drf-images.fraanab.repl.co', 'http://drf-images.fraanab.repl.co'
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    # 'http://drf-images.fraanab.repl.co',
+    'http://drf-images.fraanab.repl.co',
+    'https://drf-images.fraanab.repl.co',
 ]
 CORS_ALLOW_METHODS = [
   "DELETE",
@@ -62,13 +64,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # 'cloudinary',
+    'cloudvault',
     'task',
     'authapp',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -149,23 +152,30 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
-CLOUDINARY_STORAGE = {
-  'CLOUD_NAME': 'dkip8l8nh',
-  'API_KEY': '184266539566473',
-  'API_SECRET': 'vQ9J9sYovFP7IqalwMfzJThuLgY'
+# cloudinary.config( 
+#   cloud_name = os.getenv('CN'), 
+#   api_key = os.getenv('AK'),
+#   api_secret = os.getenv('AS')
+# )
+CLOUDINARY = {
+    "cloud_name" : os.getenv('CN'),
+    "api_key" : os.getenv('AK'),
+    "api_secret" : os.getenv('AS'),
+    "secure" : True
 }
 
 MEDIA_URL = '/media/'
 STORAGES = {
     "default": {
         "BACKEND": 
-            "django.core.files.storage.FileSystemStorage",
-            # "BACKEND": 'cloudinary.storage.RawMediaCloudinaryStorage',
+            # "django.core.files.storage.FileSystemStorage",
+            'cloudvault.cloud_storage.CloudinaryStorage',
+            # 'cloudinary.storage.RawMediaCloudinaryStorage',
   },
     "staticfiles": {
         "BACKEND":
-            "django.contrib.staticfiles.storage.StaticFilesStorage",
-            # "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            # "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "whitenoise.storage.CompressedManifestStaticFilesStorage",
   }
 }
 

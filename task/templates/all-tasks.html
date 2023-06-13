@@ -219,7 +219,7 @@
 
 	const deleteTask = async (id) => {
 		try{
-			const response = await fetch(`http://localhost:8000/api/delete-task/${id}/`, {
+			const response = await fetch(`/api/delete-task/${id}/`, {
 				method: 'DELETE',
 				headers: {
 					'X-CSRFToken': csrftoken
@@ -235,7 +235,7 @@
 
 	const updateTask = async (id, content, team, completed) => {
 		try{
-			const response = await fetch(`http://localhost:8000/api/update-task/${id}/`, {
+			const response = await fetch(`/api/update-task/${id}/`, {
 				method: 'PUT',
 				body: JSON.stringify({
 					content: content,
@@ -256,7 +256,7 @@
 
 	const getTasks = async () => {
 		try{
-			const tasksResponse = await fetch('http://localhost:8000/api/get-tasks', {
+			const tasksResponse = await fetch('/api/get-tasks', {
 				headers: {
 					'X-CSRFToken': csrftoken
 				}
@@ -279,7 +279,7 @@
 				const createdDate = item.created_at.slice(0, 10)
 
 				task.innerHTML = `
-					<img src="http://localhost:8000${item.thumbnail}" alt="${item.username}">
+					<img src="${item.thumbnail_url}" alt="${item.username}">
     				<textarea name="content" cols="30">${item.content}</textarea>
     				<div style="display:flex;align-items:center;">
     					Done [ <input type="checkbox" name="completed" ${item.completed ? 'checked' : ''}> ]
@@ -458,7 +458,7 @@
 				const createdDate = item.created_at.slice(0, 10)
 
 				task.innerHTML = `
-					<img src="http://localhost:8000${item.thumbnail}" alt="${item.username}">
+					<img src="${item.thumbnail}" alt="${item.username}">
     				<textarea name="content" cols="30">${item.content}</textarea>
     				<div style="display:flex;align-items:center;">
     					Done [ <input type="checkbox" name="completed" ${item.completed ? 'checked' : ''}> ]

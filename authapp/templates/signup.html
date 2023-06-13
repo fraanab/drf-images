@@ -63,7 +63,7 @@
             formData.append('email', form.querySelector('input[name="email"]').value)
             formData.append('password', password1)
             try{
-                const response = await fetch('http://localhost:8000/auth/signup/', {
+                const response = await fetch('{% url "signup" %}', {
                     method: 'POST',
                     headers: {'X-CSRFToken': csrftoken},
                     body: formData,

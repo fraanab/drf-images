@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "drf-images"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "4.2.2"
+asgiref = "3.7.2"
+django-cors-headers = "4.0.0"
+djangorestframework = "3.14.0"
+Pillow = "9.5.0"
+pytz = "2023.3"
+sqlparse = "0.4.4"
+tzdata = "2023.3"
+typing-extensions = "4.6.3"
+cloudinary = "1.33.0"
+whitenoise = "6.4.0"
+cloudvault = "1.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

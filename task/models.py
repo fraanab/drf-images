@@ -21,8 +21,7 @@ class Membership(models.Model):
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
-    # thumbnail = models.ImageField(upload_to='images/', default='' blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='images/', default='images/note.jpg', blank=True)
+    thumbnail = models.ImageField(upload_to='images/', default='https://res.cloudinary.com/dkip8l8nh/image/upload/v1686624957/lp59ywlxdq2xf1fvay3h.jpg', blank=True)
     content = models.TextField(blank=True, null=True)
     completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

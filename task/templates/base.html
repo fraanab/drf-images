@@ -101,7 +101,7 @@
 		const addToTeam = async (userId, teamId) => {
 			try{
 				console.log(userId, teamId)
-				const response = await fetch('/api/add-user-to-team/', {
+				const response = await fetch('{% url "add_to_team" %}', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -122,7 +122,7 @@
 		searchBtn.addEventListener('click', async () => {
 		  const username = usernameInput.value.trim();
 		  if (username !== '') {
-		    const url = '/auth/get-user/';
+		    const url = '{% url "getuser" %}';
 		    const response = await fetch(url, {
 		      method: 'POST',
 		      headers: {
@@ -173,7 +173,7 @@
 				});
 			})
 		  } else {
-		    const url = '/auth/users/';
+		    const url = '{% url "getusers" %}';
 		    const response = await fetch(url, {
 		      headers: {
 		        'X-CSRFToken': csrftoken,

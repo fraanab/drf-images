@@ -11,13 +11,18 @@ class TeamSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     teamname = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
     class Meta:
         model = Task
-        fields = ['content', 'thumbnail', 'created_at', 'completed', 'id', 'username', 'team', 'teamname']
+        fields = ['content', 'thumbnail', 'thumbnail_url', 'created_at', 'completed', 'id', 'username', 'team', 'teamname']
 
     def get_teamname(self, obj):
         if obj.team:
             return obj.team.teamname
+        return None
+    def get_thumbnail_url(self, obj):
+        if obj.thumbnail:
+            return obj.thumbnail.url
         return None
             
 class MembershipSerializer(serializers.ModelSerializer):
