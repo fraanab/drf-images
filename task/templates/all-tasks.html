@@ -376,7 +376,7 @@
 				body: createTaskFormData,
 			})
 			const createTaskResponseData = await createResponse.json()
-			console.log(createTaskResponseData);
+			console.log(createTaskResponseData.data);
 			// console.log(teamSelectValue)
 		}catch(e){console.log(e.message)}
 	}
@@ -550,7 +550,20 @@
 			console.log(e.message)
 		}
 	}
-
+	const deleteTeam = async (id) => {
+		try{
+			const response = await fetch(`/api/leave-team/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'X-CSRFToken': csrftoken
+				}
+			})
+			const data = await response.json()
+			alert(data)
+		}catch(e){
+			console.log(e.message);
+		}
+	}
 	const getMyTeams = async () => {
 		try{
 			const response = await fetch('/api/get-teams/', {
@@ -567,8 +580,9 @@
 				team.innerHTML = `
 					<p class="team-name">${x.teamname}</p>
 					<div>
-						<button class="btn1 seemembersbtn" data-teamid=${x.id}>See Members</button>
-						<button class="btn1 seetasksbtn" data-teamid="${x.id}">See tasks</button>
+						<button class="btn1 deleteteambtn" data-teamid="${x.id}">Leave Team</button>
+						<button class="btn1 seemembersbtn" data-teamid="${x.id}">See Members</button>
+						<button class="btn1 seetasksbtn" data-teamid="${x.id}">See Tasks</button>
 					</div>
 				`
 				teamsContainer.appendChild(team)
@@ -580,10 +594,19 @@
 				button.addEventListener('click', async ()=>{
 					const teamId = button.getAttribute('data-teamid')
 
-					getTeamTasks(teamId)
+					await getTeamTasks(teamId)
+					button.parentNode.parentNode.remove()
 				})
 			})
+			const deleteTeamBtn = document.querySelectorAll('.deleteteambtn')
+			deleteTeamBtn.forEach(button=>{
+				button.addEventListener('click', async ()=>{
+					const teamId = button.getAttribute('data-teamid')
 
+					deleteTeam(teamId)
+					// remove "team" div element.
+				})
+			})
 			const seeMembersBtn = document.querySelectorAll('.seemembersbtn')
 			seeMembersBtn.forEach(button=>{
 				button.addEventListener('click', async()=>{

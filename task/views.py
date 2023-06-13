@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.authentication import (BasicAuthentication,
@@ -51,13 +52,37 @@ def task_detail(request, pk):
 def create_task(request):
     serializer = TaskSerializer(data=request.data)
     user=request._request.user
+
     if serializer.is_valid():
         serializer.validated_data['by'] = user
         serializer.validated_data['username'] = user.username
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if 'team' in serializer.validated_data:
+            try:
+                team = Team.objects.get(teamname=serializer.validated_data['team'])
+                memberships = Membership.objects.filter(team=team)
+                for membership in memberships:
+                    member_email = membership.member.email
+                    try:
+                        send_mail(
+                            f'A new task by {user.username} has been assigned',             #subject
+                            f'''A new task by {user.username} has been assigned
+                                "{serializer.validated_data['content']}"
+                            ''',                                                                                    #message
+                            settings.EMAIL_HOST_USER,                                                               #sender
+                            [f'{member_email}'],                                                                    #receiver
+                            fail_silently=False
+                            )
+                    except Exception as e:
+                        extra_messages = {'error': 'There has been an error notifying other members'}
+            except Team.DoesNotExist:
+                extra_messages = {'error': 'Team not found'}
+        else:
+            extra_messages = {'error': 'No team was selected'}
+        return Response({'data':serializer.data, 'extra_messages': extra_messages}, status=status.HTTP_201_CREATED)
     print(serializer.errors, serializer)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -203,6 +228,14 @@ def add_user_to_team(request):
     membership.save()
 
     return Response({'membership':'membership created'}, status=status.HTTP_201_CREATED)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def leave_team(request, id):
+    team = Team.objects.get(id=id)
+    membership = Membership.objects.get(team=team, member=request.user)
+    membership.delete()
+    return Response({'message': 'Membership to team was cancelled.'}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

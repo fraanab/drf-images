@@ -9,21 +9,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< Updated upstream
-=======
 # SECRET_KEY = os.getenv('SECRET_KEY')
->>>>>>> Stashed changes
 SECRET_KEY = 'django-insecure-wa3zhg)8wy1t(c!uld7ua%uwox+9bg7gms15^ll0a!8$y#f@)8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-<<<<<<< Updated upstream
     # 'drf-images.fraanab.repl.co',
-=======
     'drf-images.fraanab.repl.co','localhost', '127.0.0.1'
->>>>>>> Stashed changes
 ]
 
 
@@ -157,12 +151,11 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
-<<<<<<< Updated upstream
-CLOUDINARY_STORAGE = {
-  'CLOUD_NAME': 'dkip8l8nh',
-  'API_KEY': '184266539566473',
-  'API_SECRET': 'vQ9J9sYovFP7IqalwMfzJThuLgY'
-=======
+
+# CLOUDINARY_STORAGE = {
+#   'CLOUD_NAME': 'dkip8l8nh',
+#   'API_KEY': '184266539566473',
+#   'API_SECRET': 'vQ9J9sYovFP7IqalwMfzJThuLgY'}
 # cloudinary.config( 
 #   cloud_name = os.getenv('CN'), 
 #   api_key = os.getenv('AK'),
@@ -176,7 +169,6 @@ CLOUDINARY = {
     # "api_secret" : os.getenv('AS'),
     "api_secret": 'vQ9J9sYovFP7IqalwMfzJThuLgY',
     "secure" : True
->>>>>>> Stashed changes
 }
 
 MEDIA_URL = '/media/'
@@ -201,5 +193,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/auth/login/'
+
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'testingouteqw@outlook.com'
+# EMAIL_HOST_USER = os.getenv('HOSTEMAIL')
+EMAIL_HOST_PASSWORD = '1234asa321EQW'
+# EMAIL_HOST_PASSWORD = os.getenv('HOSTPASS')
+# EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
 
 X_FRAME_OPTIONS = '*'
