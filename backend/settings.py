@@ -9,13 +9,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< Updated upstream
+=======
+# SECRET_KEY = os.getenv('SECRET_KEY')
+>>>>>>> Stashed changes
 SECRET_KEY = 'django-insecure-wa3zhg)8wy1t(c!uld7ua%uwox+9bg7gms15^ll0a!8$y#f@)8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
+<<<<<<< Updated upstream
     # 'drf-images.fraanab.repl.co',
+=======
+    'drf-images.fraanab.repl.co','localhost', '127.0.0.1'
+>>>>>>> Stashed changes
 ]
 
 
@@ -149,10 +157,26 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
+<<<<<<< Updated upstream
 CLOUDINARY_STORAGE = {
   'CLOUD_NAME': 'dkip8l8nh',
   'API_KEY': '184266539566473',
   'API_SECRET': 'vQ9J9sYovFP7IqalwMfzJThuLgY'
+=======
+# cloudinary.config( 
+#   cloud_name = os.getenv('CN'), 
+#   api_key = os.getenv('AK'),
+#   api_secret = os.getenv('AS')
+# )
+CLOUDINARY = {
+    # "cloud_name" : os.getenv('CN'),
+    "cloud_name": 'dkip8l8nh',
+    # "api_key" : os.getenv('AK'),
+    "api_key": '184266539566473',
+    # "api_secret" : os.getenv('AS'),
+    "api_secret": 'vQ9J9sYovFP7IqalwMfzJThuLgY',
+    "secure" : True
+>>>>>>> Stashed changes
 }
 
 MEDIA_URL = '/media/'
