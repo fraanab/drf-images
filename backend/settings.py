@@ -14,7 +14,9 @@ SECRET_KEY = 'django-insecure-wa3zhg)8wy1t(c!uld7ua%uwox+9bg7gms15^ll0a!8$y#f@)8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    # 'drf-images.fraanab.repl.co',
+]
 
 
 # Application definition
@@ -23,7 +25,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
-    'http://127.0.0.1:8000'
+    'http://127.0.0.1:8000',
+    # 'http://drf-images.fraanab.repl.co',
 ]
 CORS_ALLOW_METHODS = [
   "DELETE",
@@ -58,12 +61,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    # 'cloudinary',
     'task',
     'authapp',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -142,8 +147,27 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+CLOUDINARY_STORAGE = {
+  'CLOUD_NAME': 'dkip8l8nh',
+  'API_KEY': '184266539566473',
+  'API_SECRET': 'vQ9J9sYovFP7IqalwMfzJThuLgY'
+}
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STORAGES = {
+    "default": {
+        "BACKEND": 
+            "django.core.files.storage.FileSystemStorage",
+            # "BACKEND": 'cloudinary.storage.RawMediaCloudinaryStorage',
+  },
+    "staticfiles": {
+        "BACKEND":
+            "django.contrib.staticfiles.storage.StaticFilesStorage",
+            # "whitenoise.storage.CompressedManifestStaticFilesStorage",
+  }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -153,3 +177,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/auth/login/'
+
+X_FRAME_OPTIONS = '*'

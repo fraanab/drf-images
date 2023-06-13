@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+    Register page |
+{% endblock title %}
 {% block styles %}
     <style>
         a{
@@ -11,12 +14,13 @@
         form{
             display: flex;
             flex-direction: column;
-            width: 100%;
-            align-items: center;justify-content: center;
+            align-items: start;justify-content: center;
             gap: 1rem;
             border-radius: 5px;
-            box-shadow: 0 5px 20px #ccc;
-            padding: 1rem;
+            box-shadow: 5px 5px 0 #aaa;
+            border: 1px solid #f1f1f1;
+            padding: 2rem;
+            width: 550px;
         }
         form input, form button, form a{
             width: 100%;
@@ -27,9 +31,13 @@
 {% block main %}
     <section class="login">
     	<form id="myform">
+            <label>Username</label>
     		<input type="text" name="username" placeholder="Username">
+            <label>Email</label>
             <input type="email" name="email" placeholder="Email">
+            <label>Password</label>
     		<input type="password" name="password1" placeholder="******">
+            <label>Password</label>
             <input type="password" name="password2" placeholder="******">
     		<button class="btn1">Register</button>
             <p id="servermsg">Server Message: </p>

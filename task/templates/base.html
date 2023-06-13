@@ -6,8 +6,9 @@
 	{% csrf_token %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	{% load static %}
-	<title>{% block title %}{% endblock title %} testing drf</title>
+	<title>{% block title %}{% endblock title %} Notes fraanab</title>
 	<link rel="stylesheet" href="{% static 'styles.css' %}">
+	<link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
 	{% block styles %}
 	{% endblock styles %}
 	<style>
@@ -43,9 +44,13 @@
 		<input type="text" name="username" placeholder="Username" id="username-search-input">
 		<button id="username-search-btn" class="btn1"><i class="fa-solid fa-magnifying-glass"></i></button>
 
+		<a href="https://myportfolio.fraanab.repl.co"><i class="fa-solid fa-briefcase"></i></a>
+		<a href="github.com/fraanab"><i class="fa-brands fa-github"></i></a>
 
 		{% else %}
 		<a href="{% url 'loginpage' %}">Log In</a>
+		<a href="https://myportfolio.fraanab.repl.co"><i class="fa-solid fa-briefcase"></i></a>
+		<a href="github.com/fraanab"><i class="fa-brands fa-github"></i></a>
 		{% endif %}
 	</nav>
 
