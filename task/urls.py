@@ -15,5 +15,6 @@ urlpatterns = [
 	path('get-team/<str:id>/', views.get_team, name="get_team"),
 	path('add-user-to-team/', views.add_user_to_team, name="add_to_team"),
 	path('get-team-tasks/', views.teamTasks, name="team_tasks"),
-	path('get-team-members/<str:id>/', views.get_teammates, name="team_members")
+	path('get-team-members/<str:id>/', views.get_teammates, name="team_members"),
+	path('leave-team/<str:id>/', views.leave_team, name="leave_team")
 ]
