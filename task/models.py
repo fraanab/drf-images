@@ -7,7 +7,6 @@ from django.db import models
 class Team(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     teamname = models.CharField(max_length=200, unique=True)
-    # member = models.ManyToManyField(User, through='Membership', related_name="teams", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.teamname
@@ -21,7 +20,7 @@ class Membership(models.Model):
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
-    thumbnail = models.ImageField(upload_to='images/', default='https://res.cloudinary.com/dkip8l8nh/image/upload/v1686624957/lp59ywlxdq2xf1fvay3h.jpg', blank=True)
+    thumbnail = models.ImageField(upload_to='images/', default='images/note_ml5jgv.jpg', blank=True)
     content = models.TextField(blank=True, null=True)
     completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

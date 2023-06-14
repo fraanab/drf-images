@@ -279,7 +279,7 @@
 				const createdDate = item.created_at.slice(0, 10)
 
 				task.innerHTML = `
-					<img src="${item.thumbnail_url}" alt="${item.username}">
+					<img src="${item.thumbnail}" alt="${item.username}">
     				<textarea name="content" cols="30">${item.content}</textarea>
     				<div style="display:flex;align-items:center;">
     					Done [ <input type="checkbox" name="completed" ${item.completed ? 'checked' : ''}> ]
@@ -324,11 +324,19 @@
 
 					const content = contentInput.value
 					const completed = completedInput.checked
-					const team = teamSelect.value
+					let team = teamSelect.value
 
-					updateTask(taskId, content, team, completed).then(()=>{
-						getTasks()
-					})
+          if (team === "null"){
+            team = "";
+            updateTask(taskId, content, team, completed).then(()=>{
+  						getTasks()
+  					})
+          }else{
+  					updateTask(taskId, content, team, completed).then(()=>{
+  						getTasks()
+  					})
+          }
+
 				})
 			})
 		}catch(e){
@@ -604,7 +612,7 @@
 					const teamId = button.getAttribute('data-teamid')
 
 					deleteTeam(teamId)
-					// remove "team" div element.
+					button.parentNode.parentNode.remove()
 				})
 			})
 			const seeMembersBtn = document.querySelectorAll('.seemembersbtn')
