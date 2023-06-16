@@ -1,4 +1,4 @@
-# Tasks Django Web App
+# Django 4.2 Tasks Web App
 
 ## Table of Contents
 - [SetUp](#setup)
