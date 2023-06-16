@@ -148,6 +148,11 @@
 		#members-container.show{
 			display: flex;
 		}
+    @media (max-width: 720px) {
+      .home{flex-direction:column;}
+      .task-container,.forms{width:100%;}
+      #members-container{left:10vw;}
+    }
 	</style>
 {% endblock styles %}
 
@@ -206,10 +211,10 @@
 	// 	`
 	// }
 
-	const showMessage = () => {
+	const showMessage = (message) => {
 		const messageContainer = document.createElement('div');
 		messageContainer.className = 'message-container';
-		messageContainer.innerHTML = '<i class="fa-solid fa-check"></i>';
+		messageContainer.innerHTML = '' + message;
 		document.body.appendChild(messageContainer);
 
 		setTimeout(() => {
@@ -226,8 +231,9 @@
 				}
 			})
 			console.log('deleted')
+      let show_message = '<i class="fa-solid fa-check"></i>'
 			// window.location.reload()
-			showMessage()
+			showMessage(show_message)
 		}catch(e){
 			console.error(e.message)
 		}
@@ -248,7 +254,8 @@
 				}
 			})
 			// window.location.reload()
-			showMessage()
+      let show_message = '<i class="fa-solid fa-check"></i>'
+			showMessage(show_message)
 		}catch(e){
 			console.log(e.message)
 		}
@@ -393,6 +400,7 @@
 		e.preventDefault()
 		createTask()
 		taskContainer.innerHTML = ''
+    showMessage('<i class="fa-solid fa-check"></i>')
 		getTasks()
 	})
 
@@ -603,7 +611,7 @@
 					const teamId = button.getAttribute('data-teamid')
 
 					await getTeamTasks(teamId)
-					button.parentNode.parentNode.remove()
+          showMessage('<i class="fa-solid fa-check"></i>')
 				})
 			})
 			const deleteTeamBtn = document.querySelectorAll('.deleteteambtn')
@@ -612,7 +620,8 @@
 					const teamId = button.getAttribute('data-teamid')
 
 					deleteTeam(teamId)
-					button.parentNode.parentNode.remove()
+					await button.parentNode.parentNode.remove()
+          showMessage('<p>You left the team.</p>')
 				})
 			})
 			const seeMembersBtn = document.querySelectorAll('.seemembersbtn')

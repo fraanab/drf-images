@@ -16,18 +16,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     # 'drf-images.fraanab.repl.co',
-    'drf-images.fraanab.repl.co','localhost', '127.0.0.1'
+    'drf-tasks.fraanab.repl.co','localhost', '127.0.0.1'
 ]
 
 
 # Application definition
 CSRF_TRUSTED_ORIGINS = [
-  'http://127.0.0.1', 'http://localhost', 'https://drf-images.fraanab.repl.co', 'http://drf-images.fraanab.repl.co'
+  'http://127.0.0.1', 'http://localhost', 'https://drf-tasks.fraanab.repl.co', 'http://drf-tasks.fraanab.repl.co'
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'http://drf-images.fraanab.repl.co',
+    'http://drf-tasks.fraanab.repl.co',
 ]
 CORS_ALLOW_METHODS = [
   "DELETE",

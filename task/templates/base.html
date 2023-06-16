@@ -31,6 +31,10 @@
 			justify-content: space-between;
 			padding-bottom: 5px;
 		}
+    @media (max-width: 720px) {
+      nav{justify-content:center;}
+      .out-links, nav p{display:none;}
+    }
 	</style>
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -44,8 +48,8 @@
 		<input type="text" name="username" placeholder="Username" id="username-search-input">
 		<button id="username-search-btn" class="btn1"><i class="fa-solid fa-magnifying-glass"></i></button>
 
-		<a href="https://myportfolio.fraanab.repl.co"><i class="fa-solid fa-briefcase"></i></a>
-		<a href="github.com/fraanab"><i class="fa-brands fa-github"></i></a>
+		<a class="out-links" href="https://myportfolio.fraanab.repl.co"><i class="fa-solid fa-briefcase"></i></a>
+		<a class="out-links" href="github.com/fraanab"><i class="fa-brands fa-github"></i></a>
 
 		{% else %}
 		<a href="{% url 'loginpage' %}">Log In</a>
