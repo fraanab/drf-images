@@ -6,15 +6,23 @@
  
 ## SetUp
 Virtual environment
-```python -m venv venv```
+```
+python -m venv venv
+```
 or install virtualenv and
-```virtualenv env```
+```
+virtualenv env
+```
 
 You can use pip to install the requirements.txt packages
-```pip install requirements.txt -r```
+```
+pip install requirements.txt -r
+```
 
 In settings.py, you need a SECRET_KEY, you can get one with Django's
-```from django.core.management.utils import get_random_secret_key```
+```
+from django.core.management.utils import get_random_secret_key
+```
 
 You can delete "db.sqlite3" if you want to and make a new one, to then
 ```
@@ -23,7 +31,9 @@ python manage.py migrate
 ```
 
 Create a superuser
-```python manage.py createsuperuser```
+```
+python manage.py createsuperuser
+```
 
 In settings.py you can replace cloudinary for media files with your service of choice
 ```
