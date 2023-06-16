@@ -24,10 +24,25 @@ In settings.py, you need a SECRET_KEY, you can get one with Django's
 from django.core.management.utils import get_random_secret_key
 ```
 
-You can delete "db.sqlite3" if you want to and make a new one, to then
+You can delete "db.sqlite3" if you want to make a new one, to then make migrations
 ```
 python manage.py makemigrations
 python manage.py migrate
+```
+
+or connect your postgres/mysql here
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',   # change this "django.db.backends.postgresql"
+        'NAME': BASE_DIR / 'db.sqlite3',          # change
+        
+#        "USER": "",
+#        "PASSWORD": "",
+#        "HOST": "",
+#        "PORT": "",
+    }
+}
 ```
 
 Create a superuser
