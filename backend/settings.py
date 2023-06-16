@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'cloudinary',
     'cloudinary_storage',
-    # 'cloudvault',
     'task',
     'authapp',
 ]
@@ -159,17 +158,6 @@ CLOUDINARY_STORAGE = {
   "API_SECRET": os.getenv('AS'),
   "secure":True
 }
-# cloudinary.config( 
-#   cloud_name = os.getenv('CN'), 
-#   api_key = os.getenv('AK'),
-#   api_secret = os.getenv('AS')
-# )
-# CLOUDINARY = {
-#     "cloud_name" : os.getenv('CN'),
-#     "api_key" : os.getenv('AK'),
-#     "api_secret" : os.getenv('AS'),
-#     "secure" : True
-# }
 
 MEDIA_URL = '/media/'
 STORAGES = {
@@ -199,7 +187,7 @@ EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = os.getenv('HOSTEMAIL')
 EMAIL_HOST_PASSWORD = os.getenv('HOSTPASS')
-# EMAIL_USE_SSL = True
 EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
 
 X_FRAME_OPTIONS = '*'
